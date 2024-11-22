@@ -635,6 +635,23 @@ sfe_flash_read_write_result_e SFE_SPI_FLASH::disableWrite()
   return(SFE_FLASH_READ_WRITE_SUCCESS);
 }
 
+  sfe_flash_read_write_result_e SFE_SPI_FLASH::eraseSector(uint32_t address){
+    _spiPort->beginTransaction(SPISettings(_spiPortSpeed, MSBFIRST, _spiMode));
+
+    digitalWrite(_PIN_FLASH_CS, LOW);
+    _spiPort->transfer(SFE_FLASH_COMMAND_WRITE_ENABLE); //Sets the WEL bit to 1
+    digitalWrite(_PIN_FLASH_CS, HIGH);
+
+    digitalWrite(_PIN_FLASH_CS, LOW);
+    _spiPort->transfer(SFE_FLASH_COMMAND_ERASE_SECTOR); // sector erase 
+    _spiPort->transfer(address >> 16); //Address byte MSB
+    _spiPort->transfer(address >> 8); //Address byte MMSB
+    _spiPort->transfer(address & 0xFF); //Address byte LSB
+    digitalWrite(_PIN_FLASH_CS, HIGH);
+    _spiPort->endTransaction();
+
+  }
+
 //Enable or disable helpful debug messages
 void SFE_SPI_FLASH::enableDebugging(Stream &debugPort)
 {
