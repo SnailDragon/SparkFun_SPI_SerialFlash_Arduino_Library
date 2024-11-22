@@ -650,6 +650,7 @@ sfe_flash_read_write_result_e SFE_SPI_FLASH::disableWrite()
     digitalWrite(_PIN_FLASH_CS, HIGH);
     _spiPort->endTransaction();
 
+    return SFE_FLASH_READ_WRITE_SUCCESS;
   }
 
 //Enable or disable helpful debug messages
